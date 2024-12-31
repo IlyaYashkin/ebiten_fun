@@ -26,15 +26,12 @@ func (o *Object) ApplyVelocity() {
 		o.Direction = geo.Vector{}
 	}
 
-	direction := o.Destination.Clone()
-	direction.Subtract(o.Position)
+	velocity := o.Destination.Clone()
+	velocity.Subtract(o.Position)
+	velocity.Normalize()
+	velocity.Scale(o.MaxSpeed)
+	velocity.Subtract(o.Direction)
+	velocity.Scale(o.Velocity)
 
-	direction.Normalize()
-
-	direction.Scale(o.MaxSpeed)
-
-	direction.Subtract(o.Direction)
-	direction.Scale(o.Velocity)
-
-	o.Direction.Add(direction)
+	o.Direction.Add(velocity)
 }
