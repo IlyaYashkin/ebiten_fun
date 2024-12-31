@@ -49,7 +49,3 @@ func (v *Vector) IsZero() bool {
 func (v *Vector) Clone() Vector {
 	return Vector{v.X, v.Y}
 }
-
-func (v *Vector) ToPoint() Point {
-	return Point{v.X, v.Y}
-}

@@ -7,8 +7,8 @@ var (
 )
 
 type Object struct {
-	Position    geo.Point
-	Destination geo.Point
+	Position    geo.Vector
+	Destination geo.Vector
 	Direction   geo.Vector
 	MaxSpeed    float64
 	Velocity    float64
@@ -17,7 +17,7 @@ type Object struct {
 func (o *Object) Move() {
 	o.ApplyVelocity()
 
-	o.Position.Move(o.Direction)
+	o.Position.Add(o.Direction)
 }
 
 func (o *Object) ApplyVelocity() {
@@ -26,8 +26,11 @@ func (o *Object) ApplyVelocity() {
 		o.Direction = geo.Vector{}
 	}
 
-	direction := o.Position.GetVector(o.Destination)
+	direction := o.Destination.Clone()
+	direction.Subtract(o.Position)
+
 	direction.Normalize()
+
 	direction.Scale(o.MaxSpeed)
 
 	direction.Subtract(o.Direction)

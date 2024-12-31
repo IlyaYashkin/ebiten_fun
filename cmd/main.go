@@ -34,12 +34,12 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	screen.DrawImage(image, options)
 }
 
-func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
+func (g *Game) Layout() (int, int) {
 	return screenWidth, screenHeight
 }
 
 func (g *Game) init() {
-	initialPosition := geo.Point{X: screenWidth / 2, Y: screenHeight / 2}
+	initialPosition := geo.Vector{X: screenWidth / 2, Y: screenHeight / 2}
 	g.character = character.GetCharacter(initialPosition)
 
 	g.needInit = false

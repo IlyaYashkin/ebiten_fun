@@ -8,12 +8,12 @@ import (
 )
 
 type Character struct {
-	Object object.Object
+	object object.Object
 }
 
-func GetCharacter(initialPosition geo.Point) Character {
+func GetCharacter(initialPosition geo.Vector) Character {
 	return Character{
-		Object: object.Object{
+		object: object.Object{
 			Position:    initialPosition,
 			Destination: initialPosition,
 			MaxSpeed:    5.,
@@ -27,7 +27,7 @@ func (c *Character) GetImage() (*ebiten.Image, *ebiten.DrawImageOptions) {
 	image.Fill(colornames.Lime)
 
 	geoM := ebiten.GeoM{}
-	geoM.Translate(c.Object.Position.X, c.Object.Position.Y)
+	geoM.Translate(c.object.Position.X, c.object.Position.Y)
 
 	return image, &ebiten.DrawImageOptions{GeoM: geoM}
 }
@@ -36,31 +36,32 @@ func (c *Character) HandleInputs() {
 	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 		x, y := ebiten.CursorPosition()
 
-		point := geo.Point{X: float64(x), Y: float64(y)}
-		c.Object.Destination = point
+		destination := geo.Vector{X: float64(x), Y: float64(y)}
+		c.object.Destination = destination
 
 		return
 	}
 
-	dir := geo.Vector{X: 0, Y: 0}
+	destination := geo.Vector{X: 0, Y: 0}
 
 	if ebiten.IsKeyPressed(ebiten.KeyW) {
-		dir.Y -= 1
+		destination.Y -= 1
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyS) {
-		dir.Y += 1
+		destination.Y += 1
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyA) {
-		dir.X -= 1
+		destination.X -= 1
 	}
 	if ebiten.IsKeyPressed(ebiten.KeyD) {
-		dir.X += 1
+		destination.X += 1
 	}
 
-	c.Object.Destination.X = c.Object.Position.X + dir.X
-	c.Object.Destination.Y = c.Object.Position.Y + dir.Y
+	destination.Add(c.object.Position)
+
+	c.object.Destination = destination
 }
 
 func (c *Character) Move() {
-	c.Object.Move()
+	c.object.Move()
 }
