@@ -1,37 +1,30 @@
 package object
 
-import "ebiten_fun/internal/geo"
-
-var (
-	epsilon = 0.001
+import (
+	"ebiten_fun/internal/geo"
 )
 
 type Object struct {
-	Position    geo.Vector
-	Destination geo.Vector
-	Direction   geo.Vector
-	MaxSpeed    float64
-	Velocity    float64
+	Position               geo.Vector
+	Destination            geo.Vector
+	Velocity               geo.Vector
+	MaxSpeed               float64
+	AccelerationMultiplier float64
 }
 
 func (o *Object) Move() {
-	o.ApplyVelocity()
+	o.ApplyAcceleration()
 
-	o.Position.Add(o.Direction)
+	o.Position.Add(o.Velocity)
 }
 
-func (o *Object) ApplyVelocity() {
-	directionLength := o.Direction.GetLength()
-	if directionLength < epsilon {
-		o.Direction = geo.Vector{}
-	}
+func (o *Object) ApplyAcceleration() {
+	acceleration := o.Destination.Clone()
+	acceleration.Subtract(o.Position)
+	acceleration.Normalize()
+	acceleration.Scale(o.MaxSpeed)
+	acceleration.Subtract(o.Velocity)
+	acceleration.Scale(o.AccelerationMultiplier)
 
-	velocity := o.Destination.Clone()
-	velocity.Subtract(o.Position)
-	velocity.Normalize()
-	velocity.Scale(o.MaxSpeed)
-	velocity.Subtract(o.Direction)
-	velocity.Scale(o.Velocity)
-
-	o.Direction.Add(velocity)
+	o.Velocity.Add(acceleration)
 }

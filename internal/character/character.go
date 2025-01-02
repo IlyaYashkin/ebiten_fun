@@ -8,36 +8,47 @@ import (
 )
 
 type Character struct {
-	object object.Object
+	Object object.Object
+	Image  *ebiten.Image
 }
 
-func GetCharacter(initialPosition geo.Vector) Character {
+func GetCharacter(initialPosition geo.Vector, image *ebiten.Image) Character {
 	return Character{
-		object: object.Object{
-			Position:    initialPosition,
-			Destination: initialPosition,
-			MaxSpeed:    5.,
-			Velocity:    .01,
+		Object: object.Object{
+			Position:               initialPosition,
+			Destination:            initialPosition,
+			MaxSpeed:               1000.,
+			AccelerationMultiplier: .01,
 		},
+		Image: image,
 	}
 }
 
-func (c *Character) GetImage() (*ebiten.Image, *ebiten.DrawImageOptions) {
+func GetImage() *ebiten.Image {
 	image := ebiten.NewImage(20, 20)
 	image.Fill(colornames.Lime)
 
-	geoM := ebiten.GeoM{}
-	geoM.Translate(c.object.Position.X, c.object.Position.Y)
+	return image
+}
 
-	return image, &ebiten.DrawImageOptions{GeoM: geoM}
+func (c *Character) GetPosition() *ebiten.DrawImageOptions {
+	geoM := ebiten.GeoM{}
+	geoM.Translate(c.Object.Position.X, c.Object.Position.Y)
+
+	return &ebiten.DrawImageOptions{GeoM: geoM}
+}
+
+func (c *Character) GetRawPosition() (float64, float64) {
+	return c.Object.Position.X, c.Object.Position.Y
 }
 
 func (c *Character) HandleInputs() {
+
 	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 		x, y := ebiten.CursorPosition()
 
 		destination := geo.Vector{X: float64(x), Y: float64(y)}
-		c.object.Destination = destination
+		c.Object.Destination = destination
 
 		return
 	}
@@ -57,11 +68,11 @@ func (c *Character) HandleInputs() {
 		destination.X += 1
 	}
 
-	destination.Add(c.object.Position)
+	destination.Add(c.Object.Position)
 
-	c.object.Destination = destination
+	c.Object.Destination = destination
 }
 
 func (c *Character) Move() {
-	c.object.Move()
+	c.Object.Move()
 }
