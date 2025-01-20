@@ -23,18 +23,18 @@ func NewCharacter(initialPosition geo.Vector, image *ebiten.Image) Character {
 		Object: physics.Object{
 			Position:                initialPosition,
 			Destination:             initialPosition,
-			Width:                   75,
-			Height:                  75,
+			Width:                   1,
+			Height:                  1,
 			MaxSpeed:                40,
-			AccelerationCoefficient: 5,
-			FrictionCoefficient:     0.01,
+			AccelerationCoefficient: 1,
+			FrictionCoefficient:     0.1,
 		},
 		Image: image,
 	}
 }
 
 func NewImage() *ebiten.Image {
-	image := ebiten.NewImage(75, 75)
+	image := ebiten.NewImage(1, 1)
 	image.Fill(colornames.Red)
 
 	return image
@@ -50,9 +50,21 @@ func (c *Character) GetImage() (*ebiten.Image, *ebiten.DrawImageOptions) {
 	return c.Image, drawImageOptions
 }
 
-func (c *Character) Update(control control.Control) {
+func (c *Character) Update(
+	control control.Control,
+	searchStructure SearchStructure,
+) {
 	c.ProcessInputs(control)
-	c.Object.Move()
+
+	neighbours := searchStructure.GetNeighbours(c)
+
+	var neighbourObjects []*physics.Object
+
+	for _, neighbour := range neighbours {
+		neighbourObjects = append(neighbourObjects, neighbour.GetObject())
+	}
+
+	c.Object.Update(neighbourObjects)
 }
 
 func (c *Character) GetImagePosition() *ebiten.DrawImageOptions {

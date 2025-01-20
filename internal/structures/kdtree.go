@@ -1,10 +1,26 @@
-package kdtree
+package structures
 
 import (
 	"ebiten_fun/internal/entity"
 	"math"
 	"sort"
 )
+
+type KDTree struct {
+	Node *Node
+}
+
+func (KDTree *KDTree) Update(entities []entity.Entity) {
+	KDTree.Node = buildKDTree(entities, 0)
+}
+
+func (KDTree *KDTree) GetNeighbours(ent entity.Entity) []entity.Entity {
+	var neighbors []entity.Entity
+
+	findNeighborsInRadius(KDTree.Node, ent, 300, &neighbors)
+
+	return neighbors
+}
 
 type Node struct {
 	Entity     entity.Entity
@@ -18,7 +34,7 @@ type NearestNeighborResult struct {
 	Distance float64
 }
 
-func BuildKdTree(entities []entity.Entity, depth int) *Node {
+func buildKDTree(entities []entity.Entity, depth int) *Node {
 	if len(entities) == 0 {
 		return nil
 	}
@@ -37,20 +53,20 @@ func BuildKdTree(entities []entity.Entity, depth int) *Node {
 
 	return &Node{
 		Entity:     entities[median],
-		Left:       BuildKdTree(entities[:median], depth+1),
-		Right:      BuildKdTree(entities[median+1:], depth+1),
+		Left:       buildKDTree(entities[:median], depth+1),
+		Right:      buildKDTree(entities[median+1:], depth+1),
 		IsVertical: isVertical,
 	}
 }
 
-func FindNeighborsInRadius(root *Node, target entity.Entity, radius float64, neighbors *[]entity.Entity) {
+func findNeighborsInRadius(root *Node, target entity.Entity, radius float64, neighbors *[]entity.Entity) {
 	if root == nil {
 		return
 	}
 
 	if root.Entity == target {
-		FindNeighborsInRadius(root.Left, target, radius, neighbors)
-		FindNeighborsInRadius(root.Right, target, radius, neighbors)
+		findNeighborsInRadius(root.Left, target, radius, neighbors)
+		findNeighborsInRadius(root.Right, target, radius, neighbors)
 		return
 	}
 
@@ -80,29 +96,27 @@ func FindNeighborsInRadius(root *Node, target entity.Entity, radius float64, nei
 		}
 	}
 
-	// Search the primary branch
-	FindNeighborsInRadius(primary, target, radius, neighbors)
+	findNeighborsInRadius(primary, target, targetRadius, neighbors)
 
-	// Check if we need to search the secondary branch
 	if root.IsVertical {
-		if math.Abs(targetPos.X-currentPos.X) <= radius {
-			FindNeighborsInRadius(secondary, target, radius, neighbors)
+		if math.Abs(targetPos.X-currentPos.X) <= targetRadius {
+			findNeighborsInRadius(secondary, target, targetRadius, neighbors)
 		}
 	} else {
-		if math.Abs(targetPos.Y-currentPos.Y) <= radius {
-			FindNeighborsInRadius(secondary, target, radius, neighbors)
+		if math.Abs(targetPos.Y-currentPos.Y) <= targetRadius {
+			findNeighborsInRadius(secondary, target, targetRadius, neighbors)
 		}
 	}
 }
 
-func FindNearestNeighbor(root *Node, target entity.Entity, best *NearestNeighborResult) *NearestNeighborResult {
+func findNearestNeighbor(root *Node, target entity.Entity, best *NearestNeighborResult) *NearestNeighborResult {
 	if root == nil {
 		return best
 	}
 
 	if root.Entity == target {
-		best = FindNearestNeighbor(root.Left, target, best)
-		best = FindNearestNeighbor(root.Right, target, best)
+		best = findNearestNeighbor(root.Left, target, best)
+		best = findNearestNeighbor(root.Right, target, best)
 		return best
 	}
 
@@ -132,17 +146,15 @@ func FindNearestNeighbor(root *Node, target entity.Entity, best *NearestNeighbor
 		}
 	}
 
-	// Search the primary branch
-	best = FindNearestNeighbor(primary, target, best)
+	best = findNearestNeighbor(primary, target, best)
 
-	// Check if we need to search the secondary branch
 	if root.IsVertical {
 		if math.Abs(targetPos.X-currentPos.X) < best.Distance {
-			best = FindNearestNeighbor(secondary, target, best)
+			best = findNearestNeighbor(secondary, target, best)
 		}
 	} else {
 		if math.Abs(targetPos.Y-currentPos.Y) < best.Distance {
-			best = FindNearestNeighbor(secondary, target, best)
+			best = findNearestNeighbor(secondary, target, best)
 		}
 	}
 

@@ -3,6 +3,7 @@ package game
 import (
 	"ebiten_fun/config"
 	"ebiten_fun/internal/entity"
+	"ebiten_fun/internal/structures"
 	"sync"
 )
 
@@ -44,7 +45,7 @@ func (g *Game) worker(id int, entities []entity.Entity, wg *sync.WaitGroup, tick
 
 	for range tick {
 		for _, ent := range entities {
-			ent.Update(g.controls)
+			ent.Update(g.controls, &structures.Mock{})
 		}
 	}
 }

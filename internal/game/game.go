@@ -4,7 +4,6 @@ import (
 	"ebiten_fun/config"
 	"ebiten_fun/internal/control"
 	"ebiten_fun/internal/entity"
-	"ebiten_fun/internal/structures/kdtree"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -15,9 +14,7 @@ type Game struct {
 	controls      control.Control
 	character     *entity.Character
 
-	entityKDTree    *kdtree.Node
-	nearest         entity.Entity
-	nearestInRadius []entity.Entity
+	searchStructure entity.SearchStructure
 
 	entities []entity.Entity
 	pixels   []byte
@@ -30,20 +27,20 @@ func (g *Game) Update() error {
 
 	g.handleInputs()
 
-	g.callWorkers()
+	//g.character.Update(g.controls, g.searchStructure)
+	//
+	//var controls control.Control
 
 	//for _, ent := range g.entities {
-	//	ent.Update(g.controls)
+	//	//if ent == g.character {
+	//	//	continue
+	//	//}
+	//	ent.Update(g.controls, &structures.Mock{})
 	//}
 
-	//g.character.Update(g.controls)
+	g.callWorkers()
 
-	//g.entityKDTree = kdtree.BuildKdTree(g.entities, 0)
-	//
-	//var neighbors []entity.Entity
-	//kdtree.FindNeighborsInRadius(g.entityKDTree, g.character, 300, &neighbors)
-	//
-	//g.nearestInRadius = neighbors
+	//g.searchStructure.Update(g.entities)
 
 	return nil
 }
@@ -54,8 +51,6 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	//g.drawImages(screen)
 
 	//g.drawKDTree(screen)
-
-	//g.drawLineToNearest(screen)
 
 	//g.drawRadii(screen)
 

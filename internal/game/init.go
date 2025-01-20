@@ -5,17 +5,20 @@ import (
 	"ebiten_fun/internal/entity"
 	"ebiten_fun/internal/geo"
 	"ebiten_fun/internal/physics"
+	"ebiten_fun/internal/structures"
 	"math/rand/v2"
 )
 
 func (g *Game) initGame() {
-	physics.SetGravity(0)
+	physics.SetGravity(0.5)
 
 	g.pixels = make([]byte, config.ScreenWidth*config.ScreenHeight*4)
 
+	g.searchStructure = &structures.KDTree{}
+
 	image := entity.NewImage()
 
-	for i := 0; i < 1_000_000; i++ {
+	for i := 0; i < 500_000; i++ {
 		x := rand.IntN(config.ScreenWidth)
 		y := rand.IntN(config.ScreenHeight)
 

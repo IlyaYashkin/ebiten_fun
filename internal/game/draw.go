@@ -2,57 +2,12 @@ package game
 
 import (
 	"ebiten_fun/config"
-	"ebiten_fun/internal/structures/kdtree"
 	"fmt"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 	"golang.org/x/image/colornames"
 )
-
-func (g *Game) drawKDTree(screen *ebiten.Image) {
-	g.drawKDTreeNode(screen, g.entityKDTree)
-}
-
-func (g *Game) drawKDTreeNode(screen *ebiten.Image, node *kdtree.Node) {
-	if node == nil {
-		return
-	}
-
-	if node.IsVertical {
-		indent := float32(node.Entity.GetObject().Position.X)
-
-		vector.StrokeLine(
-			screen,
-			indent,
-			0,
-			indent,
-			float32(config.ScreenHeight),
-			1,
-			colornames.White,
-			false,
-		)
-
-		g.drawKDTreeNode(screen, node.Left)
-		g.drawKDTreeNode(screen, node.Right)
-	} else {
-		indent := float32(node.Entity.GetObject().Position.Y)
-
-		vector.StrokeLine(
-			screen,
-			0,
-			indent,
-			float32(config.ScreenWidth),
-			indent,
-			1,
-			colornames.White,
-			false,
-		)
-
-		g.drawKDTreeNode(screen, node.Left)
-		g.drawKDTreeNode(screen, node.Right)
-	}
-}
 
 func (g *Game) drawPixels(screen *ebiten.Image) {
 	g.pixels = make([]byte, config.ScreenWidth*config.ScreenHeight*4)
@@ -93,21 +48,6 @@ func (g *Game) printDebug(screen *ebiten.Image) {
 			g.character.GetObject().Velocity.GetMagnitude(),
 		),
 	)
-}
-
-func (g *Game) drawLineToNearest(screen *ebiten.Image) {
-	for _, nearest := range g.nearestInRadius {
-		vector.StrokeLine(
-			screen,
-			float32(g.character.GetObject().Position.X),
-			float32(g.character.GetObject().Position.Y),
-			float32(nearest.GetObject().Position.X),
-			float32(nearest.GetObject().Position.Y),
-			1,
-			colornames.White,
-			false,
-		)
-	}
 }
 
 func (g *Game) drawRadii(screen *ebiten.Image) {
