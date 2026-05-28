@@ -10,7 +10,7 @@ import (
 )
 
 func (g *Game) initGame() {
-	physics.SetGravity(0.5)
+	physics.SetGravity(config.Gravity)
 
 	g.pixels = make([]byte, config.ScreenWidth*config.ScreenHeight*4)
 
@@ -18,12 +18,18 @@ func (g *Game) initGame() {
 
 	image := entity.NewImage()
 
-	for i := 0; i < 500_000; i++ {
+	for i := 0; i < config.NumberOfCharacters; i++ {
 		x := rand.IntN(config.ScreenWidth)
 		y := rand.IntN(config.ScreenHeight)
 
 		initialPosition := geo.Vector{X: float64(x), Y: float64(y)}
-		char := entity.NewCharacter(initialPosition, image)
+		char := entity.NewCharacter(
+			initialPosition,
+			image,
+			config.CharacterMaxSpeed,
+			config.CharacterAccelerationCoefficient,
+			config.CharacterFrictionCoefficient,
+		)
 
 		g.entities = append(g.entities, &char)
 		g.character = &char

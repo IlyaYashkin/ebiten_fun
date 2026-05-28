@@ -21,8 +21,6 @@ func (v1 *Vector) Normalize(magnitude float64) {
 		return
 	}
 
-	//magnitude += 1e-16
-
 	invLength := 1.0 / magnitude
 
 	v1.Scale(invLength)

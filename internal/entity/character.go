@@ -4,9 +4,10 @@ import (
 	"ebiten_fun/internal/control"
 	"ebiten_fun/internal/geo"
 	"ebiten_fun/internal/physics"
+	"slices"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"golang.org/x/image/colornames"
-	"slices"
 )
 
 type Character struct {
@@ -18,16 +19,22 @@ type CharacterParams struct {
 	Width, Height int
 }
 
-func NewCharacter(initialPosition geo.Vector, image *ebiten.Image) Character {
+func NewCharacter(
+	initialPosition geo.Vector,
+	image *ebiten.Image,
+	characterMaxSpeed float64,
+	characterAccelerationCoefficient float64,
+	characterFrictionCoefficient float64,
+) Character {
 	return Character{
 		Object: physics.Object{
 			Position:                initialPosition,
 			Destination:             initialPosition,
 			Width:                   1,
 			Height:                  1,
-			MaxSpeed:                40,
-			AccelerationCoefficient: 1,
-			FrictionCoefficient:     0.1,
+			MaxSpeed:                characterMaxSpeed,
+			AccelerationCoefficient: characterAccelerationCoefficient,
+			FrictionCoefficient:     characterFrictionCoefficient,
 		},
 		Image: image,
 	}
@@ -56,15 +63,7 @@ func (c *Character) Update(
 ) {
 	c.ProcessInputs(control)
 
-	neighbours := searchStructure.GetNeighbours(c)
-
-	var neighbourObjects []*physics.Object
-
-	for _, neighbour := range neighbours {
-		neighbourObjects = append(neighbourObjects, neighbour.GetObject())
-	}
-
-	c.Object.Update(neighbourObjects)
+	c.Object.Update()
 }
 
 func (c *Character) GetImagePosition() *ebiten.DrawImageOptions {

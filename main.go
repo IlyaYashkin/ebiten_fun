@@ -3,8 +3,9 @@ package main
 import (
 	"ebiten_fun/config"
 	"ebiten_fun/internal/game"
-	"github.com/hajimehoshi/ebiten/v2"
 	"log"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 func main() {

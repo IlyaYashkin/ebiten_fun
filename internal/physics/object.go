@@ -17,14 +17,13 @@ type Object struct {
 	FrictionCoefficient     float64
 }
 
-func (o *Object) Update(neighbourObjects []*Object) {
+func (o *Object) Update() {
 	o.ApplyAcceleration()
 	o.ApplyGravity()
 	o.ApplyFriction()
 	o.ApplyMaxSpeedLimit()
 
-	//o.ApplyCollision(neighbourObjects)
-	o.ApplyScreenCollision()
+	//o.ApplyScreenCollision()
 
 	o.Position.Add(o.Velocity)
 }
