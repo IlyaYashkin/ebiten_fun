@@ -13,7 +13,6 @@ type Game struct {
 	ticks         []chan struct{}
 	workersNumber int
 	controls      control.Control
-	character     *entity.Character
 
 	searchStructure entity.SearchStructure
 

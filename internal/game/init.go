@@ -32,7 +32,6 @@ func (g *Game) initGame() {
 		)
 
 		g.entities = append(g.entities, &char)
-		g.character = &char
 	}
 
 	g.startWorkers()

@@ -41,12 +41,9 @@ func (g *Game) printDebug(screen *ebiten.Image) {
 	ebitenutil.DebugPrint(
 		screen,
 		fmt.Sprintf(
-			"TPS: %0.2f\nFPS: %0.2f\n%+v\n%+v\n%+v",
+			"TPS: %0.2f\nFPS: %0.2f",
 			ebiten.ActualTPS(),
 			ebiten.ActualFPS(),
-			g.controls.PressedKeys,
-			g.controls.PressedMouseButtons,
-			g.character.GetObject().Velocity.GetMagnitude(),
 		),
 	)
 }
