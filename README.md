@@ -20,8 +20,8 @@ https://github.com/user-attachments/assets/379a514a-ca9c-4fcc-a32f-00d97804e1f1
 **Требования:** Go 1.23+
 
 ```bash
-git clone https://github.com/IlyaYashkin/ebiten_fun.git
-cd ebiten_fun
+git clone https://github.com/IlyaYashkin/particles_demo.git
+cd particles_demo
 go run main.go
 ```
 
